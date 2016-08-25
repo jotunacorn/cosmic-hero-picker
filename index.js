@@ -1,4 +1,5 @@
 var app = require('express')();
+
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
@@ -15,6 +16,11 @@ app.get('/functions.js', function(req, res){
 
 app.get('/style.css', function(req, res){
     res.sendfile('style.css');
+});
+
+http.on('error', function (e) {
+    // Handle your error here
+    console.log(e);
 });
 
 io.on('connection', function(socket){
@@ -73,8 +79,13 @@ io.on('connection', function(socket){
     });
 });
 
-http.listen(3000, function(){
-    console.log('listening on *:3000');
+http.listen(process.env.PORT || 3000, function(){
+    if(process.env.PORT){
+        console.log('listening on *:'+process.env.PORT);
+    }
+    else {
+        console.log('listening on *:3000');
+    }
 });
 function shuffle(o){
     for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
